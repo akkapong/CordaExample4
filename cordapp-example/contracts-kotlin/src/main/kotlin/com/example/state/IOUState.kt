@@ -23,7 +23,7 @@ import net.corda.core.schemas.QueryableState
  */
 @BelongsToContract(IOUContract::class)
 data class IOUState(val value: Int,
-                    val Cor: Party,
+                    val lender: Party,
                     val borrower: Party,
                     override val linearId: UniqueIdentifier = UniqueIdentifier()):
         LinearState, QueryableState {
