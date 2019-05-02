@@ -1,7 +1,7 @@
 package com.example.test.flow
 
-import com.example.flow.ExampleFlow
-import com.example.state.IOUState2
+import com.example.flow2.ExampleFlow
+import com.example.state2.IOUState2
 import net.corda.core.contracts.TransactionVerificationException
 import net.corda.core.node.services.queryBy
 import net.corda.core.utilities.getOrThrow
@@ -24,12 +24,12 @@ class IOUFlowTests {
     @Before
     fun setup() {
         network = MockNetwork(MockNetworkParameters(cordappsForAllNodes = listOf(
-                TestCordapp.findCordapp("com.example.contract"),
-                TestCordapp.findCordapp("com.example.flow")
+                TestCordapp.findCordapp("com.example.contract2"),
+                TestCordapp.findCordapp("com.example.flow2")
         )))
         a = network.createPartyNode()
         b = network.createPartyNode()
-        // For real nodes this happens automatically, but we have to manually register the flow for tests.
+        // For real nodes this happens automatically, but we have to manually register the flow2 for tests.
         listOf(a, b).forEach { it.registerInitiatedFlow(ExampleFlow.Acceptor::class.java) }
         network.runNetwork()
     }
@@ -45,7 +45,7 @@ class IOUFlowTests {
         val future = a.startFlow(flow)
         network.runNetwork()
 
-        // The IOUContract specifies that IOUs cannot have negative values.
+        // The IOUContractV2 specifies that IOUs cannot have negative values.
         assertFailsWith<TransactionVerificationException> { future.getOrThrow() }
     }
 

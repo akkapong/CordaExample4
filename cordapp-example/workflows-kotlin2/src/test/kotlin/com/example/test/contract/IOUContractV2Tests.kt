@@ -1,15 +1,15 @@
 package com.example.test.contract
 
-import com.example.contract.IOUContract
-import com.example.state.IOUState2
+import com.example.contract2.IOUContractV2
+import com.example.state2.IOUState2
 import net.corda.core.identity.CordaX500Name
 import net.corda.testing.core.TestIdentity
 import net.corda.testing.node.MockServices
 import net.corda.testing.node.ledger
 import org.junit.Test
 
-class IOUContractTests {
-    private val ledgerServices = MockServices(listOf("com.example.contract", "com.example.flow"))
+class IOUContractV2Tests {
+    private val ledgerServices = MockServices(listOf("com.example.contract2", "com.example.flow2"))
     private val megaCorp = TestIdentity(CordaX500Name("MegaCorp", "London", "GB"))
     private val miniCorp = TestIdentity(CordaX500Name("MiniCorp", "New York", "US"))
     private val iouValue = 1
@@ -18,9 +18,9 @@ class IOUContractTests {
     fun `transaction must include Create command`() {
         ledgerServices.ledger {
             transaction {
-                output(IOUContract.ID, IOUState2(iouValue, miniCorp.party, megaCorp.party))
+                output(IOUContractV2.ID, IOUState2(iouValue, miniCorp.party, megaCorp.party))
                 fails()
-                command(listOf(megaCorp.publicKey, miniCorp.publicKey), IOUContract.Commands.Create())
+                command(listOf(megaCorp.publicKey, miniCorp.publicKey), IOUContractV2.Commands.Create())
                 verifies()
             }
         }
@@ -30,9 +30,9 @@ class IOUContractTests {
     fun `transaction must have no inputs`() {
         ledgerServices.ledger {
             transaction {
-                input(IOUContract.ID, IOUState2(iouValue, miniCorp.party, megaCorp.party))
-                output(IOUContract.ID, IOUState2(iouValue, miniCorp.party, megaCorp.party))
-                command(listOf(megaCorp.publicKey, miniCorp.publicKey), IOUContract.Commands.Create())
+                input(IOUContractV2.ID, IOUState2(iouValue, miniCorp.party, megaCorp.party))
+                output(IOUContractV2.ID, IOUState2(iouValue, miniCorp.party, megaCorp.party))
+                command(listOf(megaCorp.publicKey, miniCorp.publicKey), IOUContractV2.Commands.Create())
                 `fails with`("No inputs should be consumed when issuing an IOU.")
             }
         }
@@ -42,10 +42,10 @@ class IOUContractTests {
     fun `transaction must have one output`() {
         ledgerServices.ledger {
             transaction {
-                output(IOUContract.ID, IOUState2(iouValue, miniCorp.party, megaCorp.party))
-                output(IOUContract.ID, IOUState2(iouValue, miniCorp.party, megaCorp.party))
-                command(listOf(megaCorp.publicKey, miniCorp.publicKey), IOUContract.Commands.Create())
-                `fails with`("Only one output state should be created.")
+                output(IOUContractV2.ID, IOUState2(iouValue, miniCorp.party, megaCorp.party))
+                output(IOUContractV2.ID, IOUState2(iouValue, miniCorp.party, megaCorp.party))
+                command(listOf(megaCorp.publicKey, miniCorp.publicKey), IOUContractV2.Commands.Create())
+                `fails with`("Only one output state2 should be created.")
             }
         }
     }
@@ -54,8 +54,8 @@ class IOUContractTests {
     fun `lender must sign transaction`() {
         ledgerServices.ledger {
             transaction {
-                output(IOUContract.ID, IOUState2(iouValue, miniCorp.party, megaCorp.party))
-                command(miniCorp.publicKey, IOUContract.Commands.Create())
+                output(IOUContractV2.ID, IOUState2(iouValue, miniCorp.party, megaCorp.party))
+                command(miniCorp.publicKey, IOUContractV2.Commands.Create())
                 `fails with`("All of the participants must be signers.")
             }
         }
@@ -65,8 +65,8 @@ class IOUContractTests {
     fun `borrower must sign transaction`() {
         ledgerServices.ledger {
             transaction {
-                output(IOUContract.ID, IOUState2(iouValue, miniCorp.party, megaCorp.party))
-                command(megaCorp.publicKey, IOUContract.Commands.Create())
+                output(IOUContractV2.ID, IOUState2(iouValue, miniCorp.party, megaCorp.party))
+                command(megaCorp.publicKey, IOUContractV2.Commands.Create())
                 `fails with`("All of the participants must be signers.")
             }
         }
@@ -76,8 +76,8 @@ class IOUContractTests {
     fun `lender is not borrower`() {
         ledgerServices.ledger {
             transaction {
-                output(IOUContract.ID, IOUState2(iouValue, megaCorp.party, megaCorp.party))
-                command(listOf(megaCorp.publicKey, miniCorp.publicKey), IOUContract.Commands.Create())
+                output(IOUContractV2.ID, IOUState2(iouValue, megaCorp.party, megaCorp.party))
+                command(listOf(megaCorp.publicKey, miniCorp.publicKey), IOUContractV2.Commands.Create())
                 `fails with`("The lender and the borrower cannot be the same entity.")
             }
         }
@@ -87,8 +87,8 @@ class IOUContractTests {
     fun `cannot create negative-value IOUs`() {
         ledgerServices.ledger {
             transaction {
-                output(IOUContract.ID, IOUState2(-1, miniCorp.party, megaCorp.party))
-                command(listOf(megaCorp.publicKey, miniCorp.publicKey), IOUContract.Commands.Create())
+                output(IOUContractV2.ID, IOUState2(-1, miniCorp.party, megaCorp.party))
+                command(listOf(megaCorp.publicKey, miniCorp.publicKey), IOUContractV2.Commands.Create())
                 `fails with`("The IOU's value must be non-negative.")
             }
         }

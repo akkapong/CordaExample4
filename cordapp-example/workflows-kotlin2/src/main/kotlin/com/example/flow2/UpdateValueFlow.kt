@@ -1,8 +1,8 @@
-package com.example.flow
+package com.example.flow2
 
 import co.paralleluniverse.fibers.Suspendable
-import com.example.contract.IOUContract
-import com.example.state.IOUState
+import com.example.contract2.IOUContractV2 as IOUContract
+import com.example.state2.IOUState2 as IOUState
 import net.corda.core.contracts.Command
 import net.corda.core.contracts.StateAndRef
 import net.corda.core.contracts.UniqueIdentifier
@@ -31,12 +31,12 @@ object UpdateValueFlow {
     class Initiator(val iouValue: Int,
                     val linearId: String) : FlowLogic<SignedTransaction>() {
         /**
-         * The progress tracker checkpoints each stage of the flow and outputs the specified messages when each
+         * The progress tracker checkpoints each stage of the flow2 and outputs the specified messages when each
          * checkpoint is reached in the code. See the 'progressTracker.currentStep' expressions within the call() function.
          */
         companion object {
             object GENERATING_TRANSACTION : Step("Generating transaction based on new IOU.")
-            object VERIFYING_TRANSACTION : Step("Verifying contract constraints.")
+            object VERIFYING_TRANSACTION : Step("Verifying contract2 constraints.")
             object SIGNING_TRANSACTION : Step("Signing transaction with our private key.")
             object GATHERING_SIGS : Step("Gathering the counterparty's signature.") {
                 override fun childProgressTracker() = CollectSignaturesFlow.tracker()
@@ -58,7 +58,7 @@ object UpdateValueFlow {
         override val progressTracker = tracker()
 
         /**
-         * The flow logic is encapsulated within the call() method.
+         * The flow2 logic is encapsulated within the call() method.
          */
         @Suspendable
         override fun call(): SignedTransaction {
@@ -89,7 +89,7 @@ object UpdateValueFlow {
 
             // Stage 4.
             progressTracker.currentStep = GATHERING_SIGS
-            // Send the state to the counterparty, and receive it back with their signature.
+            // Send the state2 to the counterparty, and receive it back with their signature.
             val otherPartySession = initiateFlow(iouStateOut.borrower)
             val fullySignedTx = subFlow(CollectSignaturesFlow(partSignedTx, setOf(otherPartySession), GATHERING_SIGS.childProgressTracker()))
 

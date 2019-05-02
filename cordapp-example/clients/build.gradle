@@ -55,7 +55,9 @@ dependencies {
 //    cordapp project(":contracts-java")
 //    cordapp project(":workflows-java")
     cordapp project(":contracts-kotlin")
+    cordapp project(":contracts-kotlin2")
     cordapp project(":workflows-kotlin")
+    cordapp project(":workflows-kotlin2")
 }
 
 tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile) {
