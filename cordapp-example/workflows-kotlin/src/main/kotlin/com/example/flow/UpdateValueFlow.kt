@@ -28,7 +28,7 @@ import java.util.*
  *
  * borrow initiate
  */
-object UpdateFlow {
+object UpdateValueFlow {
     @InitiatingFlow
     @StartableByRPC
     class Initiator(val iouValue: Int,
