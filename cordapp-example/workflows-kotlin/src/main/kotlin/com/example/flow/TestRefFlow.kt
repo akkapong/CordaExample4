@@ -7,6 +7,7 @@ import com.example.state.IOUState
 import com.example.state.TestState
 import net.corda.core.contracts.*
 import net.corda.core.flows.*
+import net.corda.core.identity.Party
 import net.corda.core.node.services.Vault
 import net.corda.core.node.services.queryBy
 import net.corda.core.node.services.vault.DEFAULT_PAGE_NUM
@@ -28,13 +29,14 @@ object TestRefFlow {
     @InitiatingFlow
     @StartableByRPC
     class Initiator(val iouLinearId: String,
-                    val desc: String) : FlowLogic<SignedTransaction>() {
+                    val desc: String,
+                    val otherParty: Party) : FlowLogic<SignedTransaction>() {
         /**
          * The progress tracker checkpoints each stage of the flow and outputs the specified messages when each
          * checkpoint is reached in the code. See the 'progressTracker.currentStep' expressions within the call() function.
          */
         companion object {
-            object GENERATING_TRANSACTION : Step("Generating transaction based on new IOU.")
+            object GENERATING_TRANSACTION : Step("Generating transaction based on new Test.")
             object VERIFYING_TRANSACTION : Step("Verifying contract constraints.")
             object SIGNING_TRANSACTION : Step("Signing transaction with our private key.")
             object GATHERING_SIGS : Step("Gathering the counterparty's signature.") {
@@ -74,8 +76,8 @@ object TestRefFlow {
                     refId = iouStateRef.linearId.id.toString(),
                     refType = iouStateRef::class.java.simpleName,
                     desc = desc,
-                    borrower = iouStateRef.borrower,
-                    lender = iouStateRef.lender
+                    borrower = otherParty,
+                    lender = serviceHub.myInfo.legalIdentities.first()
             )
             val txCommand = Command(TestContract.Commands.Create(), testStateOut.participants.map { it.owningKey })
             val txBuilder = TransactionBuilder(notary)
@@ -127,10 +129,8 @@ object TestRefFlow {
             val signTransactionFlow = object : SignTransactionFlow(otherPartySession) {
                 override fun checkTransaction(stx: SignedTransaction) = requireThat {
                     val output = stx.tx.outputs.single().data
-                    val ref = stx.tx.references
-                    logger.info("Reference : $ref")
                     "This must be an Test transaction." using (output is TestState)
-//                    val testState = output as TestState
+
                 }
             }
             val txId = subFlow(signTransactionFlow).id
