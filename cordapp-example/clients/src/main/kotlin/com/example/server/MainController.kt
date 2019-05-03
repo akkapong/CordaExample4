@@ -2,6 +2,7 @@ package com.example.server
 
 import com.example.flow.ExampleFlow.Initiator
 import com.example.state.IOUState
+import com.example.state.TestState
 import net.corda.core.contracts.StateAndRef
 import net.corda.core.identity.CordaX500Name
 import net.corda.core.messaging.startTrackedFlow
@@ -102,4 +103,11 @@ class MainController(rpc: NodeRPCConnection) {
         return ResponseEntity.ok(myious)
     }
 
+    /**
+     * Displays all Test states that exist in the node's vault.
+     */
+    @GetMapping(value = [ "tests" ], produces = [ APPLICATION_JSON_VALUE ])
+    fun getTests() : ResponseEntity<List<StateAndRef<TestState>>> {
+        return ResponseEntity.ok(proxy.vaultQueryBy<TestState>().states)
+    }
 }
