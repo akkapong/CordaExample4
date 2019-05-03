@@ -31,13 +31,10 @@ object IOUSchemaV1 : MappedSchema(
             @Column(name = "value")
             var value: Int,
 
-            @Column(name = "test")
-            var test: String?,
-
             @Column(name = "linear_id")
             var linearId: UUID
     ) : PersistentState() {
         // Default constructor required by hibernate.
-        constructor(): this("", "", 0, null, UUID.randomUUID())
+        constructor(): this("", "", 0, UUID.randomUUID())
     }
 }
