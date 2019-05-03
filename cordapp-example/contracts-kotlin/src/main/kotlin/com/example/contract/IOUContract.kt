@@ -50,7 +50,7 @@ class IOUContract : Contract {
         "All of the participants must be signers." using (signers.containsAll(out.participants.map { it.owningKey }))
 
         // IOU-specific constraints.
-        "The IOU's value must be non-negative." using (out.value > 0)
+        "The IOU's value must more than 50." using (out.value > 10)
     }
 
     private fun verifyUpdate(tx: LedgerTransaction, signers: Set<PublicKey>) = requireThat {
