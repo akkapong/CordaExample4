@@ -52,12 +52,9 @@ dependencies {
     compile "org.springframework.boot:spring-boot-starter-log4j2:$spring_boot_version"
     compile "org.apache.logging.log4j:log4j-web:$log4j_version"
 
-//    cordapp project(":contracts-java")
-//    cordapp project(":workflows-java")
-    cordapp project(":contracts-kotlin")
-    cordapp project(":contracts-kotlin2")
-    cordapp project(":workflows-kotlin")
-    cordapp project(":workflows-kotlin2")
+    cordapp project(":workflows-kotlin:flowv2")
+    cordapp project(":contracts-kotlin:contractv1")
+
 }
 
 tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile) {
