@@ -7,6 +7,8 @@ import net.corda.core.contracts.StateAndRef
 import net.corda.core.identity.CordaX500Name
 import net.corda.core.messaging.startTrackedFlow
 import net.corda.core.messaging.vaultQueryBy
+import net.corda.core.node.services.Vault
+import net.corda.core.node.services.vault.QueryCriteria
 import net.corda.core.utilities.getOrThrow
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
@@ -109,5 +111,14 @@ class MainController(rpc: NodeRPCConnection) {
     @GetMapping(value = [ "tests" ], produces = [ APPLICATION_JSON_VALUE ])
     fun getTests() : ResponseEntity<List<StateAndRef<TestState>>> {
         return ResponseEntity.ok(proxy.vaultQueryBy<TestState>().states)
+    }
+
+    /**
+     * Displays all iou states that exist in the node's vault.
+     */
+    @GetMapping(value = [ "all_iou" ], produces = [ APPLICATION_JSON_VALUE ])
+    fun getAllIous() : ResponseEntity<Vault.Page<IOUState>> {
+        val consumedCriteria = QueryCriteria.VaultQueryCriteria(Vault.StateStatus.ALL)
+        return ResponseEntity.ok(proxy.vaultQueryBy(consumedCriteria))
     }
 }
